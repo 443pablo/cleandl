@@ -63,12 +63,12 @@ class DownloadOrganizerApp:
         info_text.grid(row=2, column=0, padx=10, pady=10)
         info_text.insert(tk.END, 
             "cleanDL:\n"
-            "• Creates an 'Organized' folder in your Downloads\n"
-            "• Files stay in original location\n"
-            "• Organized view shows files sorted by type\n"
-            "• Categories: Documents, Images, Videos, Music, Archives\n"
-            "• Original files remain untouched\n"
-            "• Uses hardlinks")
+            "• creates an 'Organized' folder in your downloads\n"
+            "• files stay in original location\n"
+            "• organized view shows files sorted by type\n"
+            "• categories: Documents, Images, Videos, Music, Archives\n"
+            "• original files remain untouched\n"
+            "• uses hardlinks, doesnt duplicate files")
         info_text.config(state=tk.DISABLED)
 
         self.status_var = tk.StringVar(value="Ready")

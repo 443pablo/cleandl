@@ -3,7 +3,6 @@ import unittest
 from organizer.file_sorter import FileSorter
 
 class TestFileSorter(unittest.TestCase):
-    
     def setUp(self):
         self.file_sorter = FileSorter()
         self.test_directory = 'test_downloads'
