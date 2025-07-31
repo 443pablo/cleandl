@@ -35,7 +35,7 @@ class DownloadOrganizerApp:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("cleanDL")
-        self.root.geometry("500x350")
+        self.root.geometry("600x350")
         
         self.file_sorter = FileSorter(file_mappings)
         self.memory_optimizer = MemoryOptimizer()
@@ -58,6 +58,7 @@ class DownloadOrganizerApp:
         
         ttk.Button(button_frame, text="Create Organized View", command=self.manual_cleanup).grid(row=0, column=0, padx=5)
         ttk.Button(button_frame, text="Cleanup Broken Links", command=self.cleanup_hardlinks).grid(row=0, column=1, padx=5)
+        ttk.Button(button_frame, text="Delete Organized Directory", command=self.delete_organized).grid(row=0, column=2, padx=5)
 
         info_text = tk.Text(self.root, height=8, width=60, wrap=tk.WORD)
         info_text.grid(row=2, column=0, padx=10, pady=10)
@@ -90,6 +91,17 @@ class DownloadOrganizerApp:
         self.status_var.set("Cleaning up broken hardlinks...")
         threading.Thread(target=self._cleanup_broken_links, daemon=True).start()
 
+    def delete_organized(self):
+        # confirm deletion with user
+        result = messagebox.askyesno(
+            "Confirm Deletion", 
+            "Are you sure you want to delete the entire Organized directory?\n\nThis will remove all organized files (but original files will remain untouched)."
+        )
+        if result:
+            self.downloads_folder = self.folder_var.get()
+            self.status_var.set("Deleting organized directory...")
+            threading.Thread(target=self._delete_organized_directory, daemon=True).start()
+
     def _organize_files(self):
         try:
             self.file_sorter.sort_files(self.downloads_folder)
@@ -101,6 +113,16 @@ class DownloadOrganizerApp:
         try:
             self.file_sorter.cleanup_broken_symlinks(self.downloads_folder)
             self.root.after(0, lambda: self.status_var.set("Broken hardlinks cleaned up!"))
+        except Exception as e:
+            self.root.after(0, lambda: self.status_var.set(f"Error: {str(e)}"))
+
+    def _delete_organized_directory(self):
+        try:
+            success = self.file_sorter.delete_organized_directory(self.downloads_folder)
+            if success:
+                self.root.after(0, lambda: self.status_var.set("Organized directory deleted successfully!"))
+            else:
+                self.root.after(0, lambda: self.status_var.set("Organized directory not found"))
         except Exception as e:
             self.root.after(0, lambda: self.status_var.set(f"Error: {str(e)}"))
 

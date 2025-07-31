@@ -67,3 +67,15 @@ class FileSorter:
                             removed_count += 1
         
         print(f"Removed {removed_count} broken links")
+    
+    def delete_organized_directory(self, downloads_folder):
+        downloads_path = Path(downloads_folder)
+        organized_path = downloads_path / self.organized_root
+        
+        if organized_path.exists():
+            shutil.rmtree(organized_path)
+            print(f"Deleted organized directory: {organized_path}")
+            return True
+        else:
+            print("Organized directory not found")
+            return False
